@@ -1,66 +1,48 @@
 {% capture section_settings %}
 {
-  "apiKey": {{ section.settings.api_key | json }},
-  "mapAddress": {{ section.settings.map_address | json }},
-  "zoom": {{ section.settings.zoom }},
-  "markerColor": {% if section.settings.map_style == 'standard' or section.settings.map_style == 'silver' or section.settings.map_style == 'retro' %}"#000000"{% else %}"#ffffff"{% endif %}
+"apiKey": {{ section.settings.api_key | json }},
+"mapAddress": {{ section.settings.map_address | json }},
+"zoom": {{ section.settings.zoom }},
+"markerColor": {% if section.settings.map_style == 'standard' or section.settings.map_style == 'silver' or section.settings.map_style == 'retro' %}"#000000"{% else %}"#ffffff"{% endif %}
 }
 {% endcapture %}
-
 <section class="Section Section--spacingNormal" id="section-{{ section.id }}" data-section-type="map" data-section-id="{{ section.id }}" data-section-settings='{{ section_settings | escape }}'>
-  <div class="Container">
-    <div class="FeaturedMap">
-      <div class="FeaturedMap__Info">
-        {% if section.settings.title != blank %}
-          <p class="FeaturedMap__Store Heading u-h1">{{ section.settings.title | escape }}</p>
-        {% endif %}
-
-        {% if section.settings.address != blank %}
-          <div class="FeaturedMap__Address Rte">
-            {{ section.settings.address }}
-          </div>
-        {% endif %}
-
-        {% if section.settings.hours != blank %}
-          <div class="FeaturedMap__Hours Rte">
-            {{ section.settings.hours }}
-          </div>
-        {% endif %}
-
-        {% if section.settings.map_link_label != blank and section.settings.map_address != blank %}
-          <a href="https://maps.google.com?daddr={{ section.settings.map_address | escape }}" target="_blank" rel="nofollow" class="FeaturedMap__Location Button Button--primary">
-            {{- section.settings.map_link_label | escape -}}
-          </a>
-        {% endif %}
-      </div>
-
-      <div class="FeaturedMap__MapContainer Image--lazyLoad Image--fadeIn" {% if section.settings.image %}data-bg="{{ section.settings.image | img_url: '1500x' }}"{% endif %}>
-        {% unless section.settings.image %}
-          <div class="PlaceholderBackground PlaceholderSvg--dark">
-            {{ 'lifestyle-1' | placeholder_svg_tag: 'PlaceholderBackground__Svg' }}
-          </div>
-        {% endunless %}
-
-        <div class="FeaturedMap__GMap"></div>
-      </div>
-    </div>
-  </div>
-
-  {%- if settings.light_background == settings.background -%}
-    <style>
-      .FeaturedMap__Info {
-        padding: 0 0 40px 0;
-      }
-
-      @media screen and (min-width: 641px) {
-        .FeaturedMap__Info {
-          padding-left: 40px;
-        }
-      }
-    </style>
-  {%- endif -%}
-
-  <script type="application/json" data-gmap-style>
+<div class="Container">
+<div class="FeaturedMap">
+<div class="FeaturedMap__Info">
+{% if section.settings.title != blank %}
+<p class="FeaturedMap__Store Heading u-h1">{{ section.settings.title | escape }}</p>
+{% endif %}
+{% if section.settings.address != blank %}
+<div class="FeaturedMap__Address Rte">
+{{ section.settings.address }}
+</div>
+{% endif %}
+{% if section.settings.hours != blank %}
+<div class="FeaturedMap__Hours Rte">
+{{ section.settings.hours }}
+</div>
+{% endif %}
+{% if section.settings.map_link_label != blank and section.settings.map_address != blank %}
+<a href="https://maps.google.com?daddr={{ section.settings.map_address | escape }}" target="_blank" rel="nofollow" class="FeaturedMap__Location Button Button--primary">
+{{- section.settings.map_link_label | escape -}}
+</a>
+{% endif %}
+</div>
+<div class="FeaturedMap__MapContainer Image--lazyLoad Image--fadeIn" {% if section.settings.image %}data-bg="{{ section.settings.image | img_url: '1500x' }}"{% endif %}>
+{% unless section.settings.image %}
+<div class="PlaceholderBackground PlaceholderSvg--dark">
+{{ 'lifestyle-1' | placeholder_svg_tag: 'PlaceholderBackground__Svg' }}
+</div>
+{% endunless %}
+<div class="FeaturedMap__GMap"></div>
+</div>
+</div>
+</div>
+{%- if settings.light_background == settings.background -%}
+<style>.FeaturedMap__Info{padding:0 0 40px 0}@media screen and (min-width:641px){.FeaturedMap__Info{padding-left:40px}}</style>
+{%- endif -%}
+<script type="application/json" data-gmap-style>
     {%- case section.settings.map_style -%}
       {%- when 'standard' -%}
         []
@@ -604,107 +586,106 @@
     {%- endcase -%}
   </script>
 </section>
-
 {% schema %}
 {
-  "name": "Map",
-  "class": "shopify-section__featured-map shopify-section--bordered",
-  "settings": [
-    {
-      "type": "text",
-      "id": "title",
-      "label": "Heading",
-      "default": "Store name"
-    },
-    {
-      "type": "richtext",
-      "id": "address",
-      "label": "Address",
-      "default": "<p>123 Fake St. Toronto, Canada</p>"
-    },
-    {
-      "type": "richtext",
-      "id": "hours",
-      "label": "Hours",
-      "default": "<p>Mon - Fri, 10am - 9pm<br>Saturday, 11am - 9pm<br>Sunday, 11am - 5pm</p>"
-    },
-    {
-      "type": "text",
-      "id": "map_address",
-      "label": "Map address",
-      "info": "Google Maps will find the exact location",
-      "default": "80 Spadina Ave, Toronto"
-    },
-    {
-      "type": "text",
-      "id": "map_link_label",
-      "label": "Map link label",
-      "default": "Get directions"
-    },
-    {
-      "type": "header",
-      "content": "Background"
-    },
-    {
-      "type": "text",
-      "id": "api_key",
-      "label": "Google Maps API key",
-      "info": "You’ll need to register a [Google Maps API Key](https://help.shopify.com/manual/using-themes/troubleshooting/map-section-api-key) to display the map."
-    },
-    {
-      "type": "range",
-      "id": "zoom",
-      "min": 12,
-      "max": 20,
-      "step": 1,
-      "label": "Map zoom",
-      "default": 14
-    },
-    {
-      "type": "select",
-      "id": "map_style",
-      "label": "Map style",
-      "options": [
-        {
-          "value": "standard",
-          "label": "Standard"
-        },
-        {
-          "value": "silver",
-          "label": "Silver"
-        },
-        {
-          "value": "retro",
-          "label": "Retro"
-        },
-        {
-          "value": "dark",
-          "label": "Dark"
-        },
-        {
-          "value": "night",
-          "label": "Night"
-        },
-        {
-          "value": "aubergine",
-          "label": "Aubergine"
-        }
-      ],
-      "default": "silver"
-    },
-    {
-      "type": "image_picker",
-      "id": "image",
-      "label": "Image",
-      "info": "Displayed if the map isn’t loaded"
-    }
-  ],
-  "presets": [
-    {
-      "category": "Store information",
-      "name": "Map",
-      "settings": {}
-    }
-  ]
+"name": "Map",
+"class": "shopify-section__featured-map shopify-section--bordered",
+"settings": [
+{
+"type": "text",
+"id": "title",
+"label": "Heading",
+"default": "Store name"
+},
+{
+"type": "richtext",
+"id": "address",
+"label": "Address",
+"default": "<p>123 Fake St. Toronto, Canada</p>"
+},
+{
+"type": "richtext",
+"id": "hours",
+"label": "Hours",
+"default": "<p>Mon - Fri, 10am - 9pm<br>Saturday, 11am - 9pm<br>Sunday, 11am - 5pm</p>"
+},
+{
+"type": "text",
+"id": "map_address",
+"label": "Map address",
+"info": "Google Maps will find the exact location",
+"default": "80 Spadina Ave, Toronto"
+},
+{
+"type": "text",
+"id": "map_link_label",
+"label": "Map link label",
+"default": "Get directions"
+},
+{
+"type": "header",
+"content": "Background"
+},
+{
+"type": "text",
+"id": "api_key",
+"label": "Google Maps API key",
+"info": "You’ll need to register a [Google Maps API Key](https://help.shopify.com/manual/using-themes/troubleshooting/map-section-api-key) to display the map."
+},
+{
+"type": "range",
+"id": "zoom",
+"min": 12,
+"max": 20,
+"step": 1,
+"label": "Map zoom",
+"default": 14
+},
+{
+"type": "select",
+"id": "map_style",
+"label": "Map style",
+"options": [
+{
+"value": "standard",
+"label": "Standard"
+},
+{
+"value": "silver",
+"label": "Silver"
+},
+{
+"value": "retro",
+"label": "Retro"
+},
+{
+"value": "dark",
+"label": "Dark"
+},
+{
+"value": "night",
+"label": "Night"
+},
+{
+"value": "aubergine",
+"label": "Aubergine"
+}
+],
+"default": "silver"
+},
+{
+"type": "image_picker",
+"id": "image",
+"label": "Image",
+"info": "Displayed if the map isn’t loaded"
+}
+],
+"presets": [
+{
+"category": "Store information",
+"name": "Map",
+"settings": {}
+}
+]
 }
 {% endschema %}
